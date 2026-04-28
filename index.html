@@ -378,10 +378,19 @@
         </div>
     </main>
 
-    <!-- 載入 Three.js (高相容性全域版本，支援本機直接雙擊開啟與所有免費網頁空間) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- 載入 Three.js (改用全球最穩定的 jsdelivr CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 
     <script>
+        // 加入全域錯誤捕捉，如果 GitHub 有問題會直接顯示在畫面下方！
+        window.addEventListener('error', function(e) {
+            const toast = document.getElementById('toast-msg');
+            if(toast) {
+                toast.style.color = '#f43f5e'; // 變成紅色警告
+                toast.textContent = '系統錯誤: ' + e.message;
+            }
+        });
+
         // 不再需要 import，因為引入上面的 script 後，THREE 就會變成全域變數
 
         // === 遊戲變數 ===
@@ -547,6 +556,12 @@
 
         // === Three.js 核心 ===
         function initThree() {
+            // 【防護機制】：確保 GitHub Pages 的網頁容器已經正確展開寬高，才開始繪製 3D 畫面
+            if (container.clientWidth === 0 || container.clientHeight === 0) {
+                setTimeout(initThree, 50);
+                return;
+            }
+
             scene = new THREE.Scene();
             scene.fog = new THREE.FogExp2(0x020617, 0.015);
             clock = new THREE.Clock();
