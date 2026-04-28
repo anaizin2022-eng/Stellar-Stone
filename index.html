@@ -861,9 +861,11 @@
         }
 
         function onWindowResize() {
-            camera.aspect = container.clientWidth / container.clientHeight;
+            const width = container.clientWidth || (window.innerWidth > 768 ? window.innerWidth - 320 : window.innerWidth);
+            const height = container.clientHeight || window.innerHeight;
+            camera.aspect = width / height;
             camera.updateProjectionMatrix();
-            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setSize(width, height);
         }
 
         // === Gemini AI 串接 ===
